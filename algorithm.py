@@ -14,12 +14,12 @@ class Algorithm:
         j = 0
         k = 1
         level = 0
-        num_to_nex_level = 0
+        num_to_next_level = 0
         while num <= end:
             puzzle[i][j] = num
             num += 1
-            if num_to_nex_level + (size - k) * 4 == num:
-                num_to_nex_level += (size - k) * 4
+            if num_to_next_level + (size - k) * 4 == num:
+                num_to_next_level += (size - k) * 4
                 level += 1
                 k += 2
             if j == size - level - 1 and i < size - level - 1:
