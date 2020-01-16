@@ -1,39 +1,39 @@
-from priorityQueue import PriorityQueue
 
 
-def heuristic(a, b):
-    (x1, y1) = a
-    (x2, y2) = b
-    return abs(x1 - x2) + abs(y1 - y2)
+class Algorithm:
+    def __init__(self, puzzle, size):
+        self.puzzle_end_state = self.get_end_puzzle_state(size)
+        self.puzzle = puzzle
+
+    @staticmethod
+    def get_end_puzzle_state(size):
+        puzzle = [[0 for x in range(size)] for y in range(size)]
+        num = 1
+        end = size * size - 1
+        i = 0
+        j = 0
+        k = 1
+        level = 0
+        num_to_nex_level = 0
+        while num <= end:
+            puzzle[i][j] = num
+            num += 1
+            if num_to_nex_level + (size - k) * 4 == num:
+                num_to_nex_level += (size - k) * 4
+                level += 1
+                k += 2
+            if j == size - level - 1 and i < size - level - 1:
+                i += 1
+            elif i == size - level - 1 and j > level:
+                j -= 1
+            elif i > level:
+                i -= 1
+            elif j < size - level - 1:
+                j += 1
+        return puzzle
 
 
-def a_star_search(graph, start, goal):
-    frontier = PriorityQueue()
-    frontier.put(start, 0)
-    came_from = {}
-    cost_so_far = {}
-    came_from[start] = None
-    cost_so_far[start] = 0
-
-    while not frontier.empty():
-        current = frontier.get()
-
-        if current == goal:
-            break
-
-        for next in graph.neighbors(current):
-            new_cost = cost_so_far[current] + graph.cost(current, next)
-            if next not in cost_so_far or new_cost < cost_so_far[next]:
-                cost_so_far[next] = new_cost
-                priority = new_cost + heuristic(goal, next)
-                frontier.put(next, priority)
-                came_from[next] = current
-
-    return came_from, cost_so_far
-
-from implementation import *
-
-came_from, cost_so_far = a_star_search(diagram4, (1, 4), (7, 8))
-draw_grid(diagram4, width=3, point_to=came_from, start=(1, 4), goal=(7, 8))
-print()
-draw_grid(diagram4, width=3, number=cost_so_far, start=(1, 4), goal=(7, 8))
+if __name__ == "__main__":
+    a = Algorithm(-1)
+    for i in a.puzzle_end_state:
+        print(i)
