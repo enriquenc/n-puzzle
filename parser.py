@@ -42,7 +42,7 @@ class Parser:
         if line == "":
             self.error(Error.ERROR_EMPTY_LINE)
         line = line.split('#')
-        if line[0] == "" and line[1] != "":
+        if line[0] == "":
             return "#"
         return line[0].strip()
 
