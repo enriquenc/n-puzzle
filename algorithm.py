@@ -4,6 +4,7 @@ class Algorithm:
     def __init__(self, puzzle, size):
         self.puzzle_end_state = self.get_end_puzzle_state(size)
         self.puzzle = puzzle
+        self.size = size
 
     @staticmethod
     def get_end_puzzle_state(size):
@@ -32,8 +33,23 @@ class Algorithm:
                 j += 1
         return puzzle
 
+    def is_solvable(self):
+        count_inversions = 0
+        puzzle_row = []
+        for line in self.puzzle:
+            for elem in line:
+                if elem:
+                    puzzle_row.append(elem)
+
+        for i in range(len(puzzle_row)):
+            for j in range(i):
+                if puzzle_row[j] > puzzle_row[i]:
+                    count_inversions += 1
+
+        return count_inversions % 2 != 0
+
 
 if __name__ == "__main__":
-    a = Algorithm(-1)
+    a = Algorithm(3)
     for i in a.puzzle_end_state:
         print(i)
