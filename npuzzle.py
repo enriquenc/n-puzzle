@@ -18,14 +18,28 @@ def main():
                [2, 0, 4],
                [6, 8, 7]]
 
-    size = 3
+    puzzle4 = [[1, 3, 6, 4],
+               [5, 2, 12, 8],
+               [15, 13, 7, 14],
+               [11, 10, 0, 9]]
 
-    a = Algorithm(puzzle1, size)
+    puzzle = []
+    f = open("file", 'r')
+    size = int(f.readline())
+    for i in range(size):
+        line = f.readline().strip(' \n')
+        line = line.split(' ')
+        a = []
+        for j in line:
+            a.append(int(j))
+        puzzle.append(a)
+
+    a = Algorithm(puzzle, size)
     if a.is_already_solved():
         success(Success.ALREADY_SOLVED)
-    if a.is_solvable() is False:
-        print('kek')
-        return
+    #if a.is_solvable() is False:
+    #    print('kek')
+    #    return
 
     before = time.time()
     v = a.solve()

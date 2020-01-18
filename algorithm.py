@@ -170,7 +170,11 @@ class Algorithm:
             #print(self.pop_open())
             #print(self.close)
             current = self.pop_open()
+            #if current.hash in self.close:
+            #    continue
+
             self.close.append(current.hash)
+
 
             if current.hash == self.end_hash:
                 return current
@@ -189,12 +193,13 @@ class Algorithm:
                     continue
                 n.h = self.heuristic(n.puzzle)
 
-                if min_neighbor.h > n.h or n.h < self.min_open():
+                if min_neighbor.h > n.h or n.h <= self.min_open():
                     min_neighbor = n
                     self.push_open(n)
-        return current
+        return start
 
     def find_elem_cord(self, el):
+
         for i in range(self.size):
             for j in range(self.size):
                 if self.puzzle[i][j] == el:
