@@ -20,7 +20,7 @@ def main():
 
     size = 3
 
-    a = Algorithm(puzzle2, size)
+    a = Algorithm(puzzle1, size)
     if a.is_already_solved():
         success(Success.ALREADY_SOLVED)
     if a.is_solvable() is False:

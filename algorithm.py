@@ -163,6 +163,7 @@ class Algorithm:
         start = Board()
         start.set_puzzle(self.puzzle)
         self.push_open(start)
+        current = None
 
         while self.empty_open() is False:
             #print(len(self.open))
@@ -188,10 +189,10 @@ class Algorithm:
                     continue
                 n.h = self.heuristic(n.puzzle)
 
-                if min_neighbor.h > n.h or n.h <= self.min_open():
+                if min_neighbor.h > n.h or n.h < self.min_open():
                     min_neighbor = n
                     self.push_open(n)
-        return start
+        return current
 
     def find_elem_cord(self, el):
         for i in range(self.size):
