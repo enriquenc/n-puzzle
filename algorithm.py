@@ -173,12 +173,23 @@ class Algorithm:
             if current.hash == self.end_hash:
                 return current
 
+
+            # for n in current.neighbors():
+            #     if n.hash in self.close:
+            #         continue
+            #     n.h = self.heuristic(n.puzzle)
+            #
+            #     if n.h <= self.min_open():
+            #          self.push_open(n)
+            min_neighbor = current
             for n in current.neighbors():
                 if n.hash in self.close:
                     continue
                 n.h = self.heuristic(n.puzzle)
-                if n.h <= self.min_open():
-                     self.push_open(n)
+
+                if min_neighbor.h > n.h or n.h <= self.min_open():
+                    min_neighbor = n
+                    self.push_open(n)
         return start
 
     def find_elem_cord(self, el):
