@@ -2,7 +2,6 @@ import enum
 
 
 class Error(enum.Enum):
-    ALL_OK = 0
     ERROR_SIZE = "Invalid puzzle size. "
     ERROR_MIN_SIZE = "Invalid puzzle size. Min size - 3."
     ERROR_ROW_ITEMS = "Invalid puzzle row items. "
@@ -12,8 +11,12 @@ class Error(enum.Enum):
     ERROR_EMPTY_LINE = "Empty lines doesn't accept."
 
 
+class Success(enum.Enum):
+    ALREADY_SOLVED = "You entered solved puzzle."
+
+
 def error(err, data=''):
-    s = ""
+    s = "\n"
     color = 1
     if color:
         s += '\x1b[1;31m'
@@ -21,4 +24,9 @@ def error(err, data=''):
     if color:
          s += '\x1b[0m'
     print(s)
+    exit(0)
+
+
+def success(err):
+    print(err.value)
     exit(0)
