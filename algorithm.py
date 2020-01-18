@@ -1,4 +1,4 @@
-from copy import deepcopy
+from copy import deepcopy, Error
 import hashlib
 
 
@@ -47,7 +47,6 @@ class Board:
     def neighbors(self):
         res = []
 
-
         #try:
         if self.zero_i - 1 >= 0:
             res.append(Board(self, -1, 0))
@@ -73,12 +72,13 @@ class Board:
 
     @staticmethod
     def hash_puzzle(puzzle):
-        s = ""
+        s = 1
         for i in puzzle:
             for j in i:
-                s += str(j)
-        return hashlib.sha256(s.encode('utf-8')).hexdigest()
-
+                s *= 10
+                s += j
+        #return int(hashlib.sha256(s.encode('utf-8')).hexdigest(), 16)
+        return s
 
 
 class Algorithm:
@@ -167,6 +167,7 @@ class Algorithm:
         while self.empty_open() is False:
             #print(len(self.open))
             #print(self.pop_open())
+            #print(self.close)
             current = self.pop_open()
             self.close.append(current.hash)
 
