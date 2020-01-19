@@ -11,12 +11,10 @@ class Board:
         self.zero_i = 0
         self.zero_j = 0
         self.h = 0
+        self.f = 0
         if parent:
             self.g = parent.g + 1
             self.puzzle = self.set_puzzle(parent.puzzle, i, j)
-
-
-        self.f = self.g + self.h
         self.parent = parent
 
     def set_puzzle(self, puzzle, i_=0, j_=0):
@@ -69,7 +67,6 @@ class Board:
         #     print(' ')
         return res
 
-
     @staticmethod
     def hash_puzzle(puzzle):
         s = 1
@@ -85,19 +82,18 @@ class Algorithm:
     def __init__(self, puzzle, size):
         self.puzzle_end_state = self.get_end_puzzle_state(size)
         self.end_hash = Board.hash_puzzle(self.puzzle_end_state)
+
         self.puzzle = puzzle
         self.size = size
         self.close = []
         self.open = []
 
-    def min_open(self):
-        if self.open == []:
-            return 0xFFFFFFFFFF
-        else:
-            return self.open[len(self.open) - 1].h
-
     def pop_open(self):
-        return self.open.pop()
+        min = self.open[0]
+        for i in self.open:
+            if min.f > i.f:
+                min = i
+        return self.open.pop(self.open.index(min))
 
     def empty_open(self):
         return self.open == []
@@ -162,6 +158,7 @@ class Algorithm:
         #self.puzzle = [item for sublist in self.puzzle for item in sublist]
         start = Board()
         start.set_puzzle(self.puzzle)
+        start.f = self.heuristic(start.puzzle)
         self.push_open(start)
         current = None
 
@@ -187,28 +184,26 @@ class Algorithm:
             #
             #     if n.h <= self.min_open():
             #          self.push_open(n)
-            min_neighbor = current
             for n in current.neighbors():
                 if n.hash in self.close:
                     continue
-                n.h = self.heuristic(n.puzzle)
-
-                if min_neighbor.h > n.h or n.h <= self.min_open():
-                    min_neighbor = n
+                n.f = n.g + self.heuristic(n.puzzle)
+                if n not in self.open:
                     self.push_open(n)
-        return start
+        return current
 
     def find_elem_cord(self, el):
-
         for i in range(self.size):
             for j in range(self.size):
-                if self.puzzle[i][j] == el:
+                if self.puzzle_end_state[i][j] == el:
                     return i, j
+
 
     def heuristic(self, pzl):
         h = 0
         for i in range(self.size):
             for j in range(self.size):
+                #if pzl[i][j]:
                 i_p, j_p = self.find_elem_cord(pzl[i][j])
                 h += abs(i - i_p) + abs(j - j_p)
         return h
