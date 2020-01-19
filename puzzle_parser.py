@@ -75,12 +75,20 @@ class Parser:
             else:
                 error(Error.ERROR_ELEMENT_EXISTS, str(elem) + '.')
 
-    def get_input(self):
-        for line in fileinput.input():
-            if self.size == 0:
-                self.find_size(line)
-            elif self.find_puzzle(line) is True:
-                break
+    def get_input(self, file=None):
+        if file is not None:
+            with fileinput.input(file) as f:
+                for line in f:
+                    if self.size == 0:
+                        self.find_size(line)
+                    elif self.find_puzzle(line) is True:
+                        break
+        else:
+            for line in fileinput.input():
+                if self.size == 0:
+                    self.find_size(line)
+                elif self.find_puzzle(line) is True:
+                    break
         fileinput.close()
 
 
