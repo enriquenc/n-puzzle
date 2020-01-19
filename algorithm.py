@@ -2,6 +2,7 @@ from copy import deepcopy, Error
 import hashlib
 
 
+current_number_of_nodes = 0
 class Board:
     def __init__(self, parent=None, i=0, j=0):
         self.puzzle = None
@@ -16,6 +17,12 @@ class Board:
             self.g = parent.g + 1
             self.puzzle = self.set_puzzle(parent.puzzle, i, j)
         self.parent = parent
+        global current_number_of_nodes
+        current_number_of_nodes += 1
+
+    def __del__(self):
+        global current_number_of_nodes
+        current_number_of_nodes -= 1
 
     def set_puzzle(self, puzzle, i_=0, j_=0):
         self.puzzle = deepcopy(puzzle)
@@ -88,6 +95,11 @@ class Algorithm:
         self.close = []
         self.open = []
 
+        self.total_opened_nodes = 0
+        self.max_number_in_memory = 0
+        self.solve_steps_amount = 0
+
+
     def pop_open(self):
         min = self.open[0]
         for i in self.open:
@@ -100,6 +112,7 @@ class Algorithm:
 
     def push_open(self, elem):
         self.open.append(elem)
+        self.total_opened_nodes += 1
         return
     @staticmethod
     def get_end_puzzle_state(size):
@@ -174,6 +187,7 @@ class Algorithm:
 
 
             if current.hash == self.end_hash:
+                self.solve_steps_amount = current.g
                 return current
 
 
@@ -190,6 +204,11 @@ class Algorithm:
                 n.f = n.g + self.heuristic(n.puzzle)
                 if n not in self.open:
                     self.push_open(n)
+
+            if current_number_of_nodes > self.max_number_in_memory:
+                self.max_number_in_memory = current_number_of_nodes
+                #print(self.max_number_in_memory)
+
         return current
 
     def find_elem_cord(self, el):
