@@ -44,8 +44,6 @@ class Board:
     def neighbors(self):
         res = []
 
-
-        #try:
         if self.zero_index % self.size != 0:
             res.append(Board(self, -1))
         if self.zero_index % self.size < (self.size - 1):
@@ -54,17 +52,6 @@ class Board:
             res.append(Board(self, -self.size))
         if self.zero_index + self.size < self.size * self.size:
             res.append(Board(self, self.size))
-        # except Exception as e:
-        #     print(e)
-        #     print(self.zero_i)
-        #     print(self.zero_j)
-        #     for i in self.puzzle:
-        #         print(i)
-        #     exit(0)
-        # for i in res:
-        #     for line in i.puzzle:
-        #         print(line)
-        #     print(' ')
         return res
 
     @staticmethod
@@ -73,7 +60,6 @@ class Board:
         for el in puzzle:
                 s *= 10
                 s += el
-        #return int(hashlib.sha256(s.encode('utf-8')).hexdigest(), 16)
         return s
 
 
@@ -191,9 +177,11 @@ class Algorithm:
             for n in current.neighbors():
                 if n.hash in self.close:
                     continue
-                n.f = n.g + self.heuristic(n.puzzle)
+                n.f = current.g + self.heuristic(n.puzzle)
                 if n not in self.open:
                     self.push_open(n)
+                #else:
+                #    self.open[self.open.index(n)].f = current.g + self.heuristic(n.puzzle)
 
             if current_number_of_nodes > self.max_number_in_memory:
                 self.max_number_in_memory = current_number_of_nodes
@@ -212,7 +200,7 @@ class Algorithm:
                 end_element_index = self.find_elem_cord(puzzle[i])
                 div = abs(i - end_element_index)
                 if div % self.size == 0:
-                    h += abs(i - end_element_index) / self.size
+                    h += div // self.size
                 else:
                     h += (self.size - div % self.size) + (div + self.size) // self.size
         return h
