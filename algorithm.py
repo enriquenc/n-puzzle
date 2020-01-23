@@ -1,21 +1,23 @@
 from copy import deepcopy, Error
 import hashlib
+import math
 
 
 current_number_of_nodes = 0
+
+
 class Board:
-    def __init__(self, parent=None, i=0, j=0):
+    def __init__(self, parent=None, move=0):
         self.puzzle = None
         self.hash = None
         self.g = 0
         self.size = 0
-        self.zero_i = 0
-        self.zero_j = 0
+        self.zero_index = 0
         self.h = 0
         self.f = 0
         if parent:
             self.g = parent.g + 1
-            self.puzzle = self.set_puzzle(parent.puzzle, i, j)
+            self.puzzle = self.set_puzzle(parent.puzzle, move)
         self.parent = parent
         global current_number_of_nodes
         current_number_of_nodes += 1
@@ -24,43 +26,34 @@ class Board:
         global current_number_of_nodes
         current_number_of_nodes -= 1
 
-    def set_puzzle(self, puzzle, i_=0, j_=0):
-        self.puzzle = deepcopy(puzzle)
-        self.size = len(puzzle)
+    def set_puzzle(self, puzzle, move=0):
+        self.puzzle = puzzle.copy()
+        self.size = int(math.sqrt(len(self.puzzle)))
         self.hash = self.hash_puzzle(self.puzzle)
-        self.calculate_puzzle(i_, j_)
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.puzzle[i][j] == 0:
-                    self.zero_i = i
-                    self.zero_j = j
+        self.zero_index = self.puzzle.index(0)
+        self.calculate_puzzle(move)
         self.hash = self.hash_puzzle(self.puzzle)
         return self.puzzle
 
-    def calculate_puzzle(self, diff_i, diff_j):
-        for i in range(len(self.puzzle)):
-            for j in range(len(self.puzzle)):
-                if self.puzzle[i][j] == 0:
-                    # print(' ')
-                    # print(diff_j)
-                    # print(diff_i)
-                    self.puzzle[i][j] = self.puzzle[i + diff_i][j + diff_j]
-                    self.puzzle[i + diff_i][j + diff_j] = 0
-
-                    return
+    def calculate_puzzle(self, move):
+        temp = self.puzzle[self.zero_index + move]
+        self.puzzle[self.zero_index] = temp
+        self.puzzle[self.zero_index + move] = 0
+        self.zero_index = self.zero_index + move
 
     def neighbors(self):
         res = []
 
+
         #try:
-        if self.zero_i - 1 >= 0:
-            res.append(Board(self, -1, 0))
-        if self.zero_j - 1 >= 0:
-            res.append(Board(self, 0, -1))
-        if self.zero_i + 1 < self.size:
-            res.append(Board(self, 1, 0))
-        if self.zero_j + 1 < self.size:
-            res.append(Board(self, 0, 1))
+        if self.zero_index % self.size != 0:
+            res.append(Board(self, -1))
+        if self.zero_index % self.size < (self.size - 1):
+            res.append(Board(self, 1))
+        if self.zero_index - self.size >= 0:
+            res.append(Board(self, -self.size))
+        if self.zero_index + self.size < self.size * self.size:
+            res.append(Board(self, self.size))
         # except Exception as e:
         #     print(e)
         #     print(self.zero_i)
@@ -77,20 +70,19 @@ class Board:
     @staticmethod
     def hash_puzzle(puzzle):
         s = 1
-        for i in puzzle:
-            for j in i:
+        for el in puzzle:
                 s *= 10
-                s += j
+                s += el
         #return int(hashlib.sha256(s.encode('utf-8')).hexdigest(), 16)
         return s
 
 
 class Algorithm:
     def __init__(self, puzzle, size):
-        self.puzzle_end_state = self.get_end_puzzle_state(size)
+        self.puzzle_end_state = self.puzzle_to_row(self.get_end_puzzle_state(size))
         self.end_hash = Board.hash_puzzle(self.puzzle_end_state)
 
-        self.puzzle = puzzle
+        self.puzzle = self.puzzle_to_row(puzzle)
         self.size = size
         self.close = []
         self.open = []
@@ -114,6 +106,7 @@ class Algorithm:
         self.open.append(elem)
         self.total_opened_nodes += 1
         return
+
     @staticmethod
     def get_end_puzzle_state(size):
         puzzle = [[0 for x in range(size)] for y in range(size)]
@@ -139,32 +132,31 @@ class Algorithm:
                 i -= 1
             elif j < size - level - 1:
                 j += 1
+
         return puzzle
 
     def is_already_solved(self):
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.puzzle_end_state[i][j] != self.puzzle[i][j]:
-                    return False
-        return True
+        return Board.hash_puzzle(self.puzzle) == Board.hash_puzzle(self.puzzle_end_state)
+
+    @staticmethod
+    def puzzle_to_row(puzzle):
+        puzzle_row = []
+        for line in puzzle:
+            for elem in line:
+                #if elem:
+                puzzle_row.append(elem)
+        return puzzle_row
 
     def is_solvable(self):
         count_inversions = 0
-        puzzle_row = []
-        for line in self.puzzle:
-            for elem in line:
-                if elem:
-                    puzzle_row.append(elem)
 
-        for i in range(len(puzzle_row)):
+        for i in range(len(self.puzzle)):
             for j in range(i):
-                if puzzle_row[j] > puzzle_row[i]:
+                if self.puzzle[j] > self.puzzle[i]:
                     count_inversions += 1
 
         return count_inversions % 2 != 0
 
-    def close(self, puzzle):
-        return
 
     def solve(self):
 
@@ -184,8 +176,6 @@ class Algorithm:
             #    continue
 
             self.close.append(current.hash)
-
-
             if current.hash == self.end_hash:
                 self.solve_steps_amount = current.g
                 return current
@@ -212,19 +202,19 @@ class Algorithm:
         return current
 
     def find_elem_cord(self, el):
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.puzzle_end_state[i][j] == el:
-                    return i, j
+        for i in range(len(self.puzzle_end_state)):
+            if self.puzzle_end_state[i] == el:
+                return i
 
-
-    def heuristic(self, pzl):
+    def heuristic(self, puzzle):
         h = 0
-        for i in range(self.size):
-            for j in range(self.size):
-                #if pzl[i][j]:
-                i_p, j_p = self.find_elem_cord(pzl[i][j])
-                h += abs(i - i_p) + abs(j - j_p)
+        for i in range(len(puzzle)):
+                end_element_index = self.find_elem_cord(puzzle[i])
+                div = abs(i - end_element_index)
+                if div % self.size == 0:
+                    h += abs(i - end_element_index) / self.size
+                else:
+                    h += (self.size - div % self.size) + (div + self.size) // self.size
         return h
 
 if __name__ == "__main__":
