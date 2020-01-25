@@ -46,9 +46,12 @@ def main():
     after = time.time()
 
     answer = []
-    for l in v.puzzle:
-        print(l)
-    print('\n\n')
+    print('\nRESULT:\n')
+    for i in range(len(v.puzzle)):
+        print("%3d"%v.puzzle[i], end='')
+        if i % a.size == a.size - 1:
+            print('')
+    print('\n\n') 
     while v.parent:
         answer.append(v.puzzle)
         v = v.parent
@@ -56,8 +59,10 @@ def main():
     length = len(answer)
     while len(answer) != 0:
         p = answer.pop()
-        for l in p:
-            print(l)
+        for i in range(len(p)):
+            print("%3d"%p[i], end='')
+            if i % a.size == a.size - 1:
+                print('')
         print(' ')
     print(length)
     print(after - before)
