@@ -149,7 +149,7 @@ class Algorithm:
         #self.puzzle = [item for sublist in self.puzzle for item in sublist]
         start = Board()
         start.set_puzzle(self.puzzle)
-        start.f = self.heuristic(start.puzzle)
+        start.f = self.heuristic_manhattan(start.puzzle)
         self.push_open(start)
         current = None
 
@@ -170,18 +170,18 @@ class Algorithm:
             # for n in current.neighbors():
             #     if n.hash in self.close:
             #         continue
-            #     n.h = self.heuristic(n.puzzle)
+            #     n.h = self.heuristic_manhattan(n.puzzle)
             #
             #     if n.h <= self.min_open():
             #          self.push_open(n)
             for n in current.neighbors():
                 if n.hash in self.close:
                     continue
-                n.f = current.g + self.heuristic(n.puzzle)
+                n.f = current.g + self.heuristic_manhattan(n.puzzle)
                 if n not in self.open:
                     self.push_open(n)
                 #else:
-                #    self.open[self.open.index(n)].f = current.g + self.heuristic(n.puzzle)
+                #    self.open[self.open.index(n)].f = current.g + self.heuristic_manhattan(n.puzzle)
 
             if current_number_of_nodes > self.max_number_in_memory:
                 self.max_number_in_memory = current_number_of_nodes
@@ -194,7 +194,7 @@ class Algorithm:
             if self.puzzle_end_state[i] == el:
                 return i
 
-    def heuristic(self, puzzle):
+    def heuristic_manhattan(self, puzzle):
         h = 0
         for i in range(len(puzzle)):
                 end_element_index = self.find_elem_cord(puzzle[i])
