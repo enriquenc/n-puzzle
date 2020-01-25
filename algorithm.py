@@ -198,11 +198,11 @@ class Algorithm:
         h = 0
         for i in range(len(puzzle)):
                 end_element_index = self.find_elem_cord(puzzle[i])
-                div = abs(i - end_element_index)
-                if div % self.size == 0:
-                    h += div // self.size
-                else:
-                    h += (self.size - div % self.size) + (div + self.size) // self.size
+                start_element_i = i // self.size
+                start_element_j = i % self.size
+                end_element_j = end_element_index % self.size
+                end_element_index = end_element_index // self.size
+                h += abs(start_element_i - end_element_index) + abs(start_element_j - end_element_j)
         return h
 
 if __name__ == "__main__":
