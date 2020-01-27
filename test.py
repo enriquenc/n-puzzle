@@ -22,11 +22,12 @@ class Tests():
                     p.get_input(dirpath + '/' + file)
                     before = time.time()
                     a = Algorithm(p.puzzle, p.size)
-                    res = a.solve()
-                    after = time.time()
                     if a.is_solvable() is False:
                         print('Not Solvable')
                         continue
+                    res = a.solve()
+                    after = time.time()
+                    
                     if res.hash == a.end_hash:
                         print("\033[92m {}\033[00m".format(file + " - OK. Time - " + str(after - before) + '.'))
                     else:
