@@ -2,11 +2,8 @@ from puzzle_parser import *
 from algorithm import *
 from error import *
 import time
-<<<<<<< HEAD
 from argparser import args
-=======
 import visualization
->>>>>>> [Visualization] Add working visualization handler.
 
 
 def default_output(answer_list, size):
