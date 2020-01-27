@@ -203,7 +203,7 @@ class Algorithm:
                 end_element_j = end_element_index % self.size
                 end_element_index = end_element_index // self.size
                 h += abs(start_element_i - end_element_index) + abs(start_element_j - end_element_j)
-        return h
+        return h * 3
 
 if __name__ == "__main__":
     a = Algorithm(3)
