@@ -23,7 +23,8 @@ def default_output(answer_list, size):
 
 
 def visual_output(answer_list, size):
-    # [!TODO] call visualizer
+    v = visualization.Visualization(answer_list[1:], size)
+    v.mainloop()
     return
 
 
