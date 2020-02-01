@@ -9,6 +9,7 @@ class Error(enum.Enum):
     ERROR_BIG_ELEMENT = "Very big element of puzzle. "
     ERROR_ELEMENT_EXISTS = "Multiple input of puzzle element: "
     ERROR_EMPTY_LINE = "Empty lines doesn't accept."
+    ERROR_FILE = "Error file entered."
 
 
 class Success(enum.Enum):
@@ -28,5 +29,5 @@ def error(err, data=''):
 
 
 def success(err):
-    print(err.value)
+    print("\033[92m\n{}\033[00m".format(err.value))
     exit(0)

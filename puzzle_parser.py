@@ -1,7 +1,8 @@
 import fileinput
 import re
 from error import Error, error
-
+from argparser import args
+import sys
 #!TODO Возможность сохранения комментариев в файл по флагу.
 #!TODO Добавить парсер флагов
 
@@ -35,6 +36,10 @@ class Parser:
         if line == "":
             error(Error.ERROR_EMPTY_LINE)
         line = line.split('#')
+        if args.save is not None and len(line) > 1:
+            f = open(args.save, 'a')
+            f.write(line[1] + '\n')
+            f.close()
         if line[0] == "":
             return "#"
         return line[0].strip()
@@ -43,6 +48,7 @@ class Parser:
 
         line = self.clear_line(line)
         if line == "#":
+            # skip lines with comments
             return False
 
         if re.match(r"^[0-9 ]*$", line) is None:
@@ -76,6 +82,10 @@ class Parser:
                 error(Error.ERROR_ELEMENT_EXISTS, str(elem) + '.')
 
     def get_input(self, file=None):
+        global args
+        if args.filename is not None:
+            sys.argv[1] = args.filename
+
         if file is not None:
             with fileinput.input(file) as f:
                 for line in f:
@@ -84,19 +94,16 @@ class Parser:
                     elif self.find_puzzle(line) is True:
                         break
         else:
-            for line in fileinput.input():
-                if self.size == 0:
-                    self.find_size(line)
-                elif self.find_puzzle(line) is True:
-                    break
+            try:
+                for line in fileinput.input():
+                    if self.size == 0:
+                        self.find_size(line)
+                    elif self.find_puzzle(line) is True:
+                        break
+            except:
+                error(Error.ERROR_FILE)
         fileinput.close()
 
-
-
-if __name__ == "__main__":
-    p = Parser()
-    p.find_size()
-    print(p.get_puzzle())
 
 
 

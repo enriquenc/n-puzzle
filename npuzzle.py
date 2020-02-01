@@ -2,70 +2,66 @@ from puzzle_parser import *
 from algorithm import *
 from error import *
 import time
+from argparser import args
+
+
+def default_output(answer_list, size):
+    print('\nRESULT:\n')
+
+    while len(answer_list) != 0:
+        p = answer_list.pop()
+        for i in range(len(p)):
+            if p[i] == 0:
+                print("\033[92m{}\033[00m".format("%3d"%p[i]), end='')
+            else:
+                print("%3d"%p[i], end='')
+            # format ouput for each of puzzle elements
+            if i % size == size - 1:
+                print('') # put the \n in the end of puzzle line
+        print(' ')
+    
+
+def visual_output(answer_list, size):
+    # [!TODO] call visualizer
+    return
+
+
+def print_answer(alogrithm):
+    before = time.time()
+    board_list = alogrithm.solve()
+    # answer list of Board Class elements
+    # from [input value] -> [end value]
+    after = time.time()
+
+    answer = []
+    # create answer list only with puzzles
+    while board_list.parent:
+        answer.append(board_list.puzzle)
+        board_list = board_list.parent
+    answer.append(board_list.puzzle)
+
+    length = len(answer)
+    if args.visualization:
+        visual_output(answer, board_list.size)
+    else:
+        default_output(answer, board_list.size)
+    
+    print("\033[92m {}\033[00m".format("\nPUZZLE SOLVED:"))
+    print("\033[92m {}\033[00m".format("\nTotal opened nodes: " + str(alogrithm.total_opened_nodes)))
+    print("\033[92m {}\033[00m".format("\nMax nodes at the same time: " + str(alogrithm.max_number_in_memory)))
+    print("\033[92m {}\033[00m".format("\nSteps count: " + str(length - 1)))
+    print("\033[92m {}\033[00m".format("\nTime to solve: " + str(after - before)))
+
+
 
 def main():
-
-    # puzzle = [[1, 2, 3],
-    #           [0, 8, 4],
-    #           [7, 6, 5]]
-    #
-    # puzzle1 = [[5, 7, 1],
-    #            [6, 0, 2],
-    #            [4, 3, 8]]
-    #
-    # puzzle2 = [[1, 5, 3],
-    #            [2, 0, 4],
-    #            [6, 8, 7]]
-    #
-    # puzzle4 = [[1, 3, 6, 4],
-    #            [5, 2, 12, 8],
-    #            [15, 13, 7, 14],
-    #            [11, 10, 0, 9]]
-
-    # puzzle = []
-    # f = open("file", 'r')
-    # size = int(f.readline())
-    # for i in range(size):
-    #     line = f.readline().strip(' \n')
-    #     line = line.split(' ')
-    #     a = []
-    #     for j in line:
-    #         a.append(int(j))
-    #     puzzle.append(a)
     parser = Parser()
     parser.get_input()
     a = Algorithm(parser.puzzle, parser.size)
     if a.is_already_solved():
         success(Success.ALREADY_SOLVED)
-    #if a.is_solvable() is False:
-    #    print('kek')
-    #    return
+    print_answer(a)
 
-    before = time.time()
-    v = a.solve()
-    after = time.time()
-
-    answer = []
-    print('\nRESULT:\n')
-    for i in range(len(v.puzzle)):
-        print("%3d"%v.puzzle[i], end='')
-        if i % a.size == a.size - 1:
-            print('')
-    print('\n\n') 
-    while v.parent:
-        answer.append(v.puzzle)
-        v = v.parent
-    answer.append(v.puzzle)
-    length = len(answer)
-    while len(answer) != 0:
-        p = answer.pop()
-        for i in range(len(p)):
-            print("%3d"%p[i], end='')
-            if i % a.size == a.size - 1:
-                print('')
-        print(' ')
-    print(length)
-    print(after - before)
-
+    
 if __name__ == "__main__":
     main()

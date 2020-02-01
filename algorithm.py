@@ -1,6 +1,7 @@
 from copy import deepcopy, Error
 import hashlib
 import math
+from argparser import args
 
 
 current_number_of_nodes = 0
@@ -149,7 +150,7 @@ class Algorithm:
         #self.puzzle = [item for sublist in self.puzzle for item in sublist]
         start = Board()
         start.set_puzzle(self.puzzle)
-        start.f = self.heuristic_manhattan(start.puzzle)
+        start.f = self.heuristic(start.puzzle)
         self.push_open(start)
         current = None
 
@@ -170,14 +171,14 @@ class Algorithm:
             # for n in current.neighbors():
             #     if n.hash in self.close:
             #         continue
-            #     n.h = self.heuristic_manhattan(n.puzzle)
+            #     n.h = self.heuristic(n.puzzle)
             #
             #     if n.h <= self.min_open():
             #          self.push_open(n)
             for n in current.neighbors():
                 if n.hash in self.close:
                     continue
-                n.f = current.g + self.heuristic_manhattan(n.puzzle)
+                n.f = current.g + self.heuristic(n.puzzle)
                 if n not in self.open:
                     self.push_open(n)
                 #else:
@@ -194,6 +195,18 @@ class Algorithm:
             if self.puzzle_end_state[i] == el:
                 return i
 
+    def heuristic(self, puzzle):
+        if args.heuristic == 2:
+            #[!TODO]
+            print('chiponpos')
+            exit(0)
+        elif args.heuristic == 3:
+            #[!TODO]
+            print('euclidist')
+            exit(0)
+        else:
+            return self.heuristic_manhattan(puzzle)
+
     def heuristic_manhattan(self, puzzle):
         h = 0
         for i in range(len(puzzle)):
@@ -204,8 +217,3 @@ class Algorithm:
                 end_element_index = end_element_index // self.size
                 h += abs(start_element_i - end_element_index) + abs(start_element_j - end_element_j)
         return h * 3
-
-if __name__ == "__main__":
-    a = Algorithm(3)
-    for i in a.puzzle_end_state:
-        print(i)
