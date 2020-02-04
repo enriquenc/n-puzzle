@@ -9,7 +9,8 @@ class Error(enum.Enum):
     ERROR_BIG_ELEMENT = "Very big element of puzzle. "
     ERROR_ELEMENT_EXISTS = "Multiple input of puzzle element: "
     ERROR_EMPTY_LINE = "Empty lines doesn't accept."
-    ERROR_FILE = "Error file entered."
+    ERROR_READ_FILE = "No such file or directory: "
+    ERROR_SAVE_FILE = "Invalid file for saving comments: "
 
 
 class Success(enum.Enum):

@@ -3,9 +3,6 @@ import re
 from error import Error, error
 from argparser import args
 import sys
-#!TODO Возможность сохранения комментариев в файл по флагу.
-#!TODO Добавить парсер флагов
-
 
 class Parser:
     def __init__(self):
@@ -81,11 +78,24 @@ class Parser:
             else:
                 error(Error.ERROR_ELEMENT_EXISTS, str(elem) + '.')
 
+    @staticmethod
+    def check_input_files():
+        if args.filename is not None:
+            try:
+                open(args.filename, 'r').close()
+            except:
+                error(Error.ERROR_READ_FILE, '\'' + args.filename + '\'')
+        if args.save is not None:
+            try:
+                open(args.save, 'a').close()
+            except:
+                error(Error.ERROR_SAVE_FILE, '\'' + args.save + '\'')
+
     def get_input(self, file=None):
         global args
+        self.check_input_files()
         if args.filename is not None:
-            sys.argv[1] = args.filename
-
+            file = args.filename
         if file is not None:
             with fileinput.input(file) as f:
                 for line in f:
@@ -94,14 +104,12 @@ class Parser:
                     elif self.find_puzzle(line) is True:
                         break
         else:
-            try:
-                for line in fileinput.input():
-                    if self.size == 0:
-                        self.find_size(line)
-                    elif self.find_puzzle(line) is True:
-                        break
-            except:
-                error(Error.ERROR_FILE)
+            while True:
+                line = input()
+                if self.size == 0:
+                    self.find_size(line)
+                elif self.find_puzzle(line) is True:
+                    break
         fileinput.close()
 
 
