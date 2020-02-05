@@ -19,7 +19,7 @@ def default_output(answer_list, size):
             if i % size == size - 1:
                 print('') # put the \n in the end of puzzle line
         print(' ')
-    
+
 
 def visual_output(answer_list, size):
     # [!TODO] call visualizer
@@ -45,7 +45,7 @@ def print_answer(alogrithm):
         visual_output(answer, board_list.size)
     else:
         default_output(answer, board_list.size)
-    
+
     print("\033[92m {}\033[00m".format("\nPUZZLE SOLVED:"))
     print("\033[92m {}\033[00m".format("\nTotal opened nodes: " + str(alogrithm.total_opened_nodes)))
     print("\033[92m {}\033[00m".format("\nMax nodes at the same time: " + str(alogrithm.max_number_in_memory)))
@@ -60,8 +60,10 @@ def main():
     a = Algorithm(parser.puzzle, parser.size)
     if a.is_already_solved():
         success(Success.ALREADY_SOLVED)
+    if a.is_solvable() is False:
+        error(Error.ERROR_NON_SOLVABLE_PUZZLE)
     print_answer(a)
 
-    
+
 if __name__ == "__main__":
     main()

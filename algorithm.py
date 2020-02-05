@@ -23,6 +23,9 @@ class Board:
         global current_number_of_nodes
         current_number_of_nodes += 1
 
+    def calculate_f(self):
+        self.f = self.h + self.g
+
     def __del__(self):
         global current_number_of_nodes
         current_number_of_nodes -= 1
@@ -30,7 +33,6 @@ class Board:
     def set_puzzle(self, puzzle, move=0):
         self.puzzle = puzzle.copy()
         self.size = int(math.sqrt(len(self.puzzle)))
-        self.hash = self.hash_puzzle(self.puzzle)
         self.zero_index = self.puzzle.index(0)
         self.calculate_puzzle(move)
         self.hash = self.hash_puzzle(self.puzzle)
@@ -141,13 +143,12 @@ class Algorithm:
             for j in range(i):
                 if self.puzzle[j] > self.puzzle[i]:
                     count_inversions += 1
-
+        return True
+        #[!TODO] is solvable check
         return count_inversions % 2 != 0
 
 
     def solve(self):
-
-        #self.puzzle = [item for sublist in self.puzzle for item in sublist]
         start = Board()
         start.set_puzzle(self.puzzle)
         start.f = self.heuristic(start.puzzle)
@@ -155,38 +156,24 @@ class Algorithm:
         current = None
 
         while self.empty_open() is False:
-            #print(len(self.open))
-            #print(self.pop_open())
-            #print(self.close)
+
             current = self.pop_open()
-            #if current.hash in self.close:
-            #    continue
 
             self.close.append(current.hash)
             if current.hash == self.end_hash:
                 self.solve_steps_amount = current.g
                 return current
 
-
-            # for n in current.neighbors():
-            #     if n.hash in self.close:
-            #         continue
-            #     n.h = self.heuristic(n.puzzle)
-            #
-            #     if n.h <= self.min_open():
-            #          self.push_open(n)
             for n in current.neighbors():
                 if n.hash in self.close:
                     continue
-                n.f = current.g + self.heuristic(n.puzzle)
-                if n not in self.open:
-                    self.push_open(n)
-                #else:
-                #    self.open[self.open.index(n)].f = current.g + self.heuristic_manhattan(n.puzzle)
+                n.h = self.heuristic(n.puzzle)
+                n.calculate_f()
+                self.push_open(n)
+
 
             if current_number_of_nodes > self.max_number_in_memory:
                 self.max_number_in_memory = current_number_of_nodes
-                #print(self.max_number_in_memory)
 
         return current
 
