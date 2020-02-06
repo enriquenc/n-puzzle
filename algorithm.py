@@ -2,10 +2,9 @@ from copy import deepcopy, Error
 import hashlib
 import math
 from argparser import args
-
+from priority_queue import myPriorityQueue
 
 current_number_of_nodes = 0
-
 
 class Board:
     def __init__(self, parent=None, move=0):
@@ -25,6 +24,9 @@ class Board:
 
     def calculate_f(self):
         self.f = self.h + self.g
+
+    def __lt__(self, other):
+        return self.f < other.f
 
     def __del__(self):
         global current_number_of_nodes
@@ -74,27 +76,11 @@ class Algorithm:
         self.puzzle = self.puzzle_to_row(puzzle)
         self.size = size
         self.close = []
-        self.open = []
+        self.open = myPriorityQueue()
 
         self.total_opened_nodes = 0
         self.max_number_in_memory = 0
         self.solve_steps_amount = 0
-
-
-    def pop_open(self):
-        min = self.open[0]
-        for i in self.open:
-            if min.f > i.f:
-                min = i
-        return self.open.pop(self.open.index(min))
-
-    def empty_open(self):
-        return self.open == []
-
-    def push_open(self, elem):
-        self.open.append(elem)
-        self.total_opened_nodes += 1
-        return
 
     @staticmethod
     def get_end_puzzle_state(size):
@@ -152,12 +138,13 @@ class Algorithm:
         start = Board()
         start.set_puzzle(self.puzzle)
         start.f = self.heuristic(start.puzzle)
-        self.push_open(start)
+        self.open.push(start)
+        self.total_opened_nodes += 1
         current = None
 
-        while self.empty_open() is False:
+        while self.open.isEmpty() is False:
 
-            current = self.pop_open()
+            current = self.open.pop()
 
             self.close.append(current.hash)
             if current.hash == self.end_hash:
@@ -169,7 +156,8 @@ class Algorithm:
                     continue
                 n.h = self.heuristic(n.puzzle)
                 n.calculate_f()
-                self.push_open(n)
+                self.open.push(n)
+                self.total_opened_nodes += 1
 
 
             if current_number_of_nodes > self.max_number_in_memory:

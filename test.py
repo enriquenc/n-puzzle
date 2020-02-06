@@ -8,7 +8,7 @@ class Tests():
 
     @staticmethod
     def test_all():
-        my_path = './resources/'
+        my_path = './resources/solvable/'
         r = re.compile("\dx\d")
 
 
