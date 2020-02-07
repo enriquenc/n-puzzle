@@ -4,6 +4,7 @@ from error import *
 import time
 from argparser import args
 import visualization
+from tkinter import Tk
 
 
 def default_output(answer_list, size):
@@ -23,7 +24,7 @@ def default_output(answer_list, size):
 
 
 def visual_output(answer_list, size):
-    v = visualization.Visualization(answer_list[1:], size)
+    v = visualization.Visualization(answer_list, size, master=Tk())
     v.mainloop()
     return
 
@@ -43,9 +44,7 @@ def print_answer(alogrithm):
     answer.append(board_list.puzzle)
 
     length = len(answer)
-    if args.visualization:
-        visual_output(answer, board_list.size)
-    else:
+    if args.visualization is False:
         default_output(answer, board_list.size)
 
     print("\033[92m {}\033[00m".format("\nPUZZLE SOLVED:"))
@@ -54,6 +53,8 @@ def print_answer(alogrithm):
     print("\033[92m {}\033[00m".format("\nSteps count: " + str(length - 1)))
     print("\033[92m {}\033[00m".format("\nTime to solve: " + str(after - before)))
 
+    if args.visualization:
+        visual_output(answer, board_list.size)
 
 
 def main():
