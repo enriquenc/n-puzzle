@@ -165,11 +165,6 @@ class Algorithm:
 
         return current
 
-    def find_elem_cord(self, el):
-        for i in range(len(self.puzzle_end_state)):
-            if self.puzzle_end_state[i] == el:
-                return i
-
     def heuristic(self, puzzle):
         if args.heuristic == 2:
             #[!TODO]
@@ -185,7 +180,7 @@ class Algorithm:
     def heuristic_manhattan(self, puzzle):
         h = 0
         for i in range(len(puzzle)):
-                end_element_index = self.find_elem_cord(puzzle[i])
+                end_element_index = self.puzzle_end_state.index(puzzle[i])
                 start_element_i = i // self.size
                 start_element_j = i % self.size
                 end_element_j = end_element_index % self.size
