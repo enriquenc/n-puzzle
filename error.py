@@ -12,6 +12,7 @@ class Error(enum.Enum):
     ERROR_READ_FILE = "No such file or directory: "
     ERROR_SAVE_FILE = "Invalid file for saving comments: "
     ERROR_NON_SOLVABLE_PUZZLE = "Puzzle is not sovlable."
+    ERROR_EMPTY_FILE = "Empty file entered."
 
 
 class Success(enum.Enum):

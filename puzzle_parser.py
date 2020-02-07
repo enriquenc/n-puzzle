@@ -30,6 +30,7 @@ class Parser:
     @staticmethod
     def clear_line(line):
         line = line.rstrip(' \n')
+
         if line == "":
             error(Error.ERROR_EMPTY_LINE)
         line = line.split('#')
@@ -102,15 +103,18 @@ class Parser:
                     if self.size == 0:
                         self.find_size(line)
                     elif self.find_puzzle(line) is True:
-                        break
+                        return
+            error(Error.ERROR_EMPTY_FILE)
         else:
             while True:
-                line = input()
+                try:
+                    line = input()
+                except:
+                    error(Error.ERROR_EMPTY_FILE)
                 if self.size == 0:
                     self.find_size(line)
                 elif self.find_puzzle(line) is True:
                     break
-        fileinput.close()
 
 
 
