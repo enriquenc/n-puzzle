@@ -10,6 +10,8 @@ parser.add_argument('-u', dest="heuristic", type=int, help="use different heuris
                                                     "1 - manhattan, "
                                                     "2 - chiponpos, "
                                                     "3 - euclidist. "
-                                                    "Default: manhattan.", choices=range(1, 4))
+                                                    "Default: manhattan.", metavar="[1-3]", choices=range(1, 4), default=1)
+parser.add_argument('-i', dest="increase", type=int, metavar="[1-1000]",
+                help="coefficient to try increase speed of algorithm", choices=range(1, 1001), default=1)
 
 args = parser.parse_args()

@@ -175,11 +175,11 @@ class Algorithm:
             return self.heuristic_manhattan(puzzle)
 
     def heuristic_chiponpos(self, puzzle):
-        res = 0
+        h = 0
         for el in self.puzzle:
             if self.puzzle.index(el) != self.puzzle_end_state.index(el):
-                res += 1
-        return res
+                h += 1
+        return h * args.increase
 
     def heuristic_euclidist(self, puzzle):
         h = 0
@@ -190,7 +190,7 @@ class Algorithm:
                 end_element_j = end_element_index % self.size
                 end_element_index = end_element_index // self.size
                 h += math.sqrt(abs(start_element_i - end_element_index)**2 + abs(start_element_j - end_element_j)**2)
-        return h
+        return h * args.increase
 
     def heuristic_manhattan(self, puzzle):
         h = 0
@@ -201,4 +201,4 @@ class Algorithm:
                 end_element_j = end_element_index % self.size
                 end_element_index = end_element_index // self.size
                 h += abs(start_element_i - end_element_index) + abs(start_element_j - end_element_j)
-        return h * 25
+        return h * args.increase
