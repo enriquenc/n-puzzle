@@ -3,6 +3,7 @@ import hashlib
 import math
 from argparser import args
 from priority_queue import myPriorityQueue
+import math
 
 current_number_of_nodes = 0
 
@@ -167,15 +168,29 @@ class Algorithm:
 
     def heuristic(self, puzzle):
         if args.heuristic == 2:
-            #[!TODO]
-            print('chiponpos')
-            exit(0)
+            return self.heuristic_chiponpos(puzzle)
         elif args.heuristic == 3:
-            #[!TODO]
-            print('euclidist')
-            exit(0)
+            return self.heuristic_euclidist(puzzle)
         else:
             return self.heuristic_manhattan(puzzle)
+
+    def heuristic_chiponpos(self, puzzle):
+        res = 0
+        for el in self.puzzle:
+            if self.puzzle.index(el) != self.puzzle_end_state.index(el):
+                res += 1
+        return res
+
+    def heuristic_euclidist(self, puzzle):
+        h = 0
+        for i in range(len(puzzle)):
+                end_element_index = self.puzzle_end_state.index(puzzle[i])
+                start_element_i = i // self.size
+                start_element_j = i % self.size
+                end_element_j = end_element_index % self.size
+                end_element_index = end_element_index // self.size
+                h += math.sqrt(abs(start_element_i - end_element_index)**2 + abs(start_element_j - end_element_j)**2)
+        return h
 
     def heuristic_manhattan(self, puzzle):
         h = 0
@@ -186,4 +201,4 @@ class Algorithm:
                 end_element_j = end_element_index % self.size
                 end_element_index = end_element_index // self.size
                 h += abs(start_element_i - end_element_index) + abs(start_element_j - end_element_j)
-        return h * 3
+        return h * 25
