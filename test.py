@@ -9,13 +9,13 @@ class Tests():
     @staticmethod
     def test_all():
         my_path = './resources/'
-        r = re.compile("\dx\d")
+        r = re.compile("\d{1,}")
 
         for (dirpath, dirnames, filenames) in walk(my_path):
             if filenames != []:
                 d = r.findall(dirpath)
 
-                print("\033[96m {}\033[00m".format('TEST FOR ' + d[0][0] + 'x' + d[0][0] + ' PUZZLES ' + dirpath[:-4].split('/')[2].upper() + '\n'))
+                print("\033[96m {}\033[00m".format('TEST FOR ' + d[0] + 'x' + d[0] + ' PUZZLES ' + dirpath[:-4].split('/')[2].upper() + '\n'))
                 for file in filenames:
                     p = Parser()
                     p.get_input(dirpath + '/' + file)

@@ -42,6 +42,16 @@ class Parser:
             return "#"
         return line[0].strip()
 
+    def split_empty_lines(self, line):
+        k = 0
+        for el in line:
+            if el.isdigit() is False:
+                k = 1
+                line.remove(el)
+        if k == 1:
+            self.split_empty_lines(line)
+
+
     def find_puzzle(self, line):
 
         line = self.clear_line(line)
@@ -54,10 +64,7 @@ class Parser:
 
         line = line.split(' ')
 
-        for l in line:
-            if l == '':
-                line.remove(l)
-
+        self.split_empty_lines(line)
         if len(line) != self.size:
             error(Error.ERROR_ELEMENTS_AMOUNT, "Should be " + str(self.size) + " elements.")
 
