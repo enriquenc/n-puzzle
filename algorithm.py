@@ -108,7 +108,6 @@ class Algorithm:
                 i -= 1
             elif j < size - level - 1:
                 j += 1
-
         return puzzle
 
     def is_already_solved(self):
@@ -123,16 +122,38 @@ class Algorithm:
                 puzzle_row.append(elem)
         return puzzle_row
 
-    def is_solvable(self):
-        count_inversions = 0
-
-        for i in range(len(self.puzzle)):
-            for j in range(i):
-                if self.puzzle[j] > self.puzzle[i]:
+    def is_solvable(puzzle):
+        list_puzzle = []
+        size = len(puzzle)
+        num = 1
+        end = size * size - 1
+        i = 0
+        j = 0
+        k = 1
+        level = 0
+        num_to_next_level = 0
+        while num <= end:
+            list_puzzle.append(puzzle[i][j])
+            num += 1
+            if num_to_next_level + (size - k) * 4 == num:
+                num_to_next_level += (size - k) * 4
+                level += 1
+                k += 2
+            if j == size - level - 1 and i < size - level - 1:
+                i += 1
+            elif i == size - level - 1 and j > level:
+                j -= 1
+            elif i > level:
+                i -= 1
+            elif j < size - level - 1:
+                j += 1
+        list_puzzle.append(puzzle[size // 2][(size - 1) // 2])
+        count_inversions = list_puzzle.index(0)
+        for i in range(len(list_puzzle)):
+            for j in range(i + 1, len(list_puzzle)):
+                if list_puzzle[j] < list_puzzle[i]:
                     count_inversions += 1
-        return True
-        #[!TODO] is solvable check
-        return count_inversions % 2 != 0
+        return count_inversions % 2 == 0
 
 
     def solve(self):

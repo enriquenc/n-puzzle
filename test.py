@@ -8,9 +8,8 @@ class Tests():
 
     @staticmethod
     def test_all():
-        my_path = './resources/solvable/'
+        my_path = './resources/'
         r = re.compile("\dx\d")
-
 
         for (dirpath, dirnames, filenames) in walk(my_path):
             if filenames != []:
@@ -22,9 +21,11 @@ class Tests():
                     p.get_input(dirpath + '/' + file)
                     before = time.time()
                     a = Algorithm(p.puzzle, p.size)
-                    if a.is_solvable() is False:
+
+                    if Algorithm.is_solvable(p.puzzle) is False:
                         print(file + ' - not solvable.')
                         continue
+
                     res = a.solve()
                     after = time.time()
 

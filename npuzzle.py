@@ -63,7 +63,7 @@ def main():
     a = Algorithm(parser.puzzle, parser.size)
     if a.is_already_solved():
         success(Success.ALREADY_SOLVED)
-    if a.is_solvable() is False:
+    if Algorithm.is_solvable(parser.puzzle) is False:
         error(Error.ERROR_NON_SOLVABLE_PUZZLE)
     print_answer(a)
 
