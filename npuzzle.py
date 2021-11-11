@@ -27,7 +27,7 @@ def visual_output(answer_list, size):
     v = visualization.Visualization(answer_list, size, master=Tk())
     v.mainloop()
     return
-
+print('Ruslan Mamedov')
 
 def print_answer(alogrithm):
     before = time.time()
